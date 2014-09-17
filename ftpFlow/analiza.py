@@ -47,8 +47,6 @@ def showHelp():
 	print "-j | --json Nombre del archivo json final"
 	print "-jp| --json-path ubicacion del archivo json final"
 	
-				
-				
 
 def proceso(cmdDict):
 	con = ftplib.FTP(cmdDict["host"])
@@ -65,11 +63,11 @@ def proceso(cmdDict):
 		data.append(dataFromFtpLine(i))
 
 	raiz = listFromObject(data,cmdDict["baseDate"],path)
-	for item in raiz:
-		print item["modifiedDate"]," ",item['path'],"-",item["name"]
+	#for item in raiz:
+		#print item["modifiedDate"]," ",item['path'],"-",item["name"]
 	listaGrande =  runListFind(raiz,cmdDict["minDate"])
-	for elemnto in listaGrande:
-		print elemnto
+	#for elemnto in listaGrande:
+		#print elemnto
 	saveJson(listaGrande,cmdDict["jsonPath"],cmdDict["jsonFile"])
 	con.quit()
 
@@ -113,7 +111,7 @@ def main(argv):
 			jsonPath = arg
 
 	cmdDict = {"host":host,"user":user,"pass":passw,"path":path,"baseDate":baseDate,"minDate":minDate,"jsonFile":jsonFile,"jsonPath":jsonPath}
-	print cmdDict
+	#print cmdDict
 	proceso(cmdDict)
 
 
