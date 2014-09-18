@@ -96,58 +96,65 @@ def bytesToFormatSize(sizeBytes):
 	return formatSize
 
 #-------------------- Transformando unidades a bytes --------#
-def kibToBytes(sizeKb):
-	bytes = sizeKb * 1024
+def kibToBytes(sizeBytes):
+	bytes = sizeBytes * 1024
 	return bytes
 
-def mibToBytes(sizeMb):
-	bytes = (sizeMb * 1024) * 1024
+
+def mibToBytes(sizeBytes):
+	bytes = kibToBytes(sizeBytes) * 1024
 	return bytes
 
-def gibToBytes(sizeGv):
-	bytes = ((sizeGv * 1024) * 1024) * 1024
+
+def gibToBytes(sizeBytes):
+	bytes = mibToBytes(sizeBytes) * 1024
 	return bytes
 
-def tibToBytes(sizeGv):
-	bytes = (((sizeGv * 1024) * 1024) * 1024)*1024
+
+def tibToBytes(sizeBytes):
+	bytes = gibToBytes(sizeBytes) * 1024
 	return bytes
 
-def pibToBytes(sizeGv):
-	bytes = tibToBytes(sizeGv) * 1024
+
+def pibToBytes(sizeBytes):
+	bytes = tibToBytes(sizeBytes) * 1024
 	return bytes
 
-def eibToBytes(sizeGv):
-	bytes = pibToBytes(sizeGv) * 1024
+
+def eibToBytes(sizeBytes):
+	bytes = pibToBytes(sizeBytes) * 1024
 	return bytes
 
-def zibToBytes(sizeGv):
-	bytes = eibToBytes(sizeGv) * 1024
+
+def zibToBytes(sizeBytes):
+	bytes = eibToBytes(sizeBytes) * 1024
 	return bytes
 
-def zibToBytes(sizeGv):
-	bytes = zibToBytes(sizeGv) * 1024
+
+def yibToBytes(sizeBytes):
+	bytes = zibToBytes(sizeBytes) * 1024
 	return bytes
+
 
 #Calcula valor en bytes de x cantidad de unidad x
 def unitToBytes(value,unit):
-	if (unit == KiB):
+	if (unit == "KiB"):
 		bytes = kibToBytes(value)
-	elif (unit == MiB):
+	elif (unit == "MiB"):
 		bytes = mibToBytes(value)
-	elif (unit == GiB):
+	elif (unit == "GiB"):
 		bytes = gibToBytes(value)
-	elif (unit == TiB):
+	elif (unit == "TiB"):
 		bytes = tibToBytes(value)
-	elif (unit == PiB):
+	elif (unit == "PiB"):
 		bytes = pibToBytes(value)
-	elif (unit == EiB):
+	elif (unit == "EiB"):
 		bytes = eibToBytes(value)
-	elif (unit == ZiB):
+	elif (unit == "ZiB"):
 		bytes = zibToBytes(value)
-	elif (unit == YiB):
+	elif (unit == "YiB"):
 		bytes = yibToBytes(value)
 	return bytes
-	
 ####################  Conversiones de  Bytes ################
 
 def copiaFile(ftp,destFolder,rootPath,item):
@@ -262,6 +269,7 @@ def sizeDownListByQuotaLow(downList,maxSizeBytes):
 				print "item['sizeUnit']: "+item['sizeUnit']
 				if(item['sizeUnit'] == maxSizeObj['unit']):
 					print "Descarta"
+					tmpList.append(item)
 				else:
 					totalSizeBytes += item["sizeBytes"]
 					miniList.append(item)
@@ -278,11 +286,94 @@ def sizeDownListByQuotaLow(downList,maxSizeBytes):
 	difTotalSizeBytes = maxSizeBytes - totalSizeBytes
 	difTotalSizeBytesObj = bytesToFormatSize(difTotalSizeBytes)
 	print "Diferencia: "+str(difTotalSizeBytesObj["value"])+" "+difTotalSizeBytesObj["unit"]
+	perCentDifTotalSizeBytes = float((difTotalSizeBytes * 100) / maxSizeBytes)
+	print "Equivale a : "+str(perCentDifTotalSizeBytes)+"%"
+
+	maxSizeObj = bytesToFormatSize(maxSizeBytes)
+	maxUnitValBytes = unitToBytes(1,maxSizeObj["unit"])
+	perCentUnitVal = float((maxUnitValBytes * 100) / maxSizeBytes)
+	print "perCentUnitVal: "+str(perCentUnitVal)+"%"
+
+	sumaDescBytes = 0.0
+	for item in tmpList:
+		#print item
+		sumaDescBytes += item["sizeBytes"]
+		if(sumaDescBytes < difTotalSizeBytes):
+			#print "#### Agregar a lista principal"
+			print "totalSizeBytes: "+str(totalSizeBytes)
+			print "maxSizeBytes: "+str(maxSizeBytes)
+			totalSizeBytes += item["sizeBytes"] 
+			miniList.append(item)
+
+
+
+
 	miniListDict["size"] = totalSizeBytes
 	miniListDict["downList"] = miniList
 	return miniListDict
 
 
+#Suma el peso de un rango de elementos en orden hasta completar una cuota
+#de peso, buscando bajar los objetos mas pesados
+#Entrega un objeto con el total en bytes y un objeto listaDescarga
+def sizeDownListByQuotaHi(downList,maxSizeBytes):
+	miniListDict = {}
+	miniList = []
+	tmpList = []
+	totalSizeBytes = 0
+	tmpTotalSizeBytes = 0
+	difTotalSizeBytes = 0
+
+	maxSizeObj = bytesToFormatSize(maxSizeBytes)
+
+	for item in downList:
+		if(totalSizeBytes <= maxSizeBytes):
+			if(item["sizeBytes"] < maxSizeBytes):
+				print "item['sizeUnit']: "+item['sizeUnit']
+				if(item['sizeUnit'] == maxSizeObj['unit']):
+					print "Descarta"
+					tmpList.append(item)
+				else:
+					totalSizeBytes += item["sizeBytes"]
+					miniList.append(item)
+					if (totalSizeBytes > maxSizeBytes):
+						totalSizeBytes -= item["sizeBytes"]
+						miniList.remove(item)
+						#break
+
+			print "totalSizeBytes: "+str(totalSizeBytes)
+			print "maxSizeBytes: "+str(maxSizeBytes)
+		else:
+			break
+
+	difTotalSizeBytes = maxSizeBytes - totalSizeBytes
+	difTotalSizeBytesObj = bytesToFormatSize(difTotalSizeBytes)
+	print "Diferencia: "+str(difTotalSizeBytesObj["value"])+" "+difTotalSizeBytesObj["unit"]
+	perCentDifTotalSizeBytes = float((difTotalSizeBytes * 100) / maxSizeBytes)
+	print "Equivale a : "+str(perCentDifTotalSizeBytes)+"%"
+
+	maxSizeObj = bytesToFormatSize(maxSizeBytes)
+	maxUnitValBytes = unitToBytes(1,maxSizeObj["unit"])
+	perCentUnitVal = float((maxUnitValBytes * 100) / maxSizeBytes)
+	print "perCentUnitVal: "+str(perCentUnitVal)+"%"
+
+	sumaDescBytes = 0.0
+	for item in tmpList:
+		#print item
+		sumaDescBytes += item["sizeBytes"]
+		if(sumaDescBytes < difTotalSizeBytes):
+			#print "#### Agregar a lista principal"
+			print "totalSizeBytes: "+str(totalSizeBytes)
+			print "maxSizeBytes: "+str(maxSizeBytes)
+			totalSizeBytes += item["sizeBytes"] 
+			miniList.append(item)
+
+
+
+
+	miniListDict["size"] = totalSizeBytes
+	miniListDict["downList"] = miniList
+	return miniListDict
 ############### Trabajando con peso en disco #####################
 
 

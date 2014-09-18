@@ -34,7 +34,7 @@ for funcion in funciones:
 		contenido.append(linea2)
 		contenido.append(linea3)
 		mHead0 ="def unitToBytes(value,unit):"
-		mLine0 = "	if (unit == "+funcion["unit"]+"):"
+		mLine0 = "	if (unit == \""+funcion["unit"]+"\"):"
 		mLine1 = "		bytes = "+funcion["prefix"]+funcion["sufix"]+"(value)"
 		mainFunc.append(mHead0)
 		mainFunc.append(mLine0)
@@ -49,7 +49,7 @@ for funcion in funciones:
 		contenido.append(linea1)
 		contenido.append(linea2)
 		contenido.append(linea3)
-		mLinea = "	elif (unit == "+funcion["unit"]+"):"
+		mLinea = "	elif (unit == \""+funcion["unit"]+"\"):"
 		mLine1 = "		bytes = "+funcion["prefix"]+funcion["sufix"]+"(value)"
 		mainFunc.append(mLinea)
 		mainFunc.append(mLine1)

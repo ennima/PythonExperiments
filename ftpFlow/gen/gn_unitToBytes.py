@@ -42,20 +42,20 @@ def yibToBytes(sizeBytes):
  #################################### 
 
 def unitToBytes(value,unit):
-	if (unit == KiB):
+	if (unit == "KiB"):
 		bytes = kibToBytes(value)
-	elif (unit == MiB):
+	elif (unit == "MiB"):
 		bytes = mibToBytes(value)
-	elif (unit == GiB):
+	elif (unit == "GiB"):
 		bytes = gibToBytes(value)
-	elif (unit == TiB):
+	elif (unit == "TiB"):
 		bytes = tibToBytes(value)
-	elif (unit == PiB):
+	elif (unit == "PiB"):
 		bytes = pibToBytes(value)
-	elif (unit == EiB):
+	elif (unit == "EiB"):
 		bytes = eibToBytes(value)
-	elif (unit == ZiB):
+	elif (unit == "ZiB"):
 		bytes = zibToBytes(value)
-	elif (unit == YiB):
+	elif (unit == "YiB"):
 		bytes = yibToBytes(value)
 	return bytes
