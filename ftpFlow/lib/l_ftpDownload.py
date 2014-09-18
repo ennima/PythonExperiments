@@ -5,13 +5,63 @@ def l_ftpDownloadTest():
 	test()
 
 def bytesToKb(sizeBytes):
-	kbs = sizeBytes/1024
+	kbs = float(sizeBytes/1024)
 	return kbs
 
 def bytesToMb(sizeBytes):
 	kbSize = bytesToKb(sizeBytes)
-	mbs = kbSize/1024
+	mbs = float(kbSize/1024)
 	return mbs
+
+def bytesToGb(sizeBytes):
+	mbs = bytesToMb(sizeBytes)
+	gbs = float(mbs/1024)
+	return gbs
+
+def bytesToTb(sizeBytes):
+	gbs = bytesToGb(sizeBytes)
+	tbs = float(gbs/1024)
+	return tbs
+
+def bytesToFormatSize(sizeBytes):
+	formatSize = {"value":0,"unit":"bytes"}
+
+	if(bytesToGb(sizeBytes)<1):
+		
+		if(bytesToMb(sizeBytes)<1):
+			
+			if(bytesToKb(sizeBytes)<1):
+				#print "Bytes"
+				formatSize["value"] = sizeBytes
+				formatSize["unit"] = "bytes"
+			else:
+				#print "Kb"
+				formatSize["value"] = bytesToKb(sizeBytes)
+				formatSize["unit"] = "Kb"
+		else:
+			#print "Mb"
+			formatSize["value"] = bytesToMb(sizeBytes)
+			formatSize["unit"] = "Mb"
+	else:
+		#print "Gb"
+		formatSize["value"] = bytesToGb(sizeBytes)
+		formatSize["unit"] = "Gb"
+	formatSize["bytes"] = sizeBytes
+	
+	return formatSize
+
+
+def kbToBytes(sizeKb):
+	bytes = sizeKb * 1024
+	return bytes
+
+def mbToBytes(sizeMb):
+	bytes = (sizeMb * 1024) * 1024
+	return bytes
+
+def gbToBytes(sizeGv):
+	bytes = ((sizeGv * 1024) * 1024) * 1024
+	return bytes
 
 def copiaFile(ftp,destFolder,rootPath,item):
 	#remoteFileSize =ftp.size(item["path"]+"/"+item["name"])
@@ -53,9 +103,40 @@ def copiaFile(ftp,destFolder,rootPath,item):
 
 	#raw_input()
 
+#Agrega a una lista de descarga informacion del peso del archivo
 def sizeItemDownList(ftpObj,downList):
-	
+	ftp = ftplib.FTP(ftpObj["host"])
+	ftp.login(ftpObj["user"],ftpObj["pass"])
 
+	for item in downList:
+		remoteFileSize =ftp.size(item["path"]+"/"+item["name"])
+		remoteFileSizeF = bytesToFormatSize(remoteFileSize)
+		#print str(remoteFileSizeF["value"])+" "+remoteFileSizeF["unit"]
+		item["sizeValue"] = remoteFileSizeF["value"]
+		item["sizeUnit"] = remoteFileSizeF["unit"]
+		item["sizeBytes"] = remoteFileSizeF["bytes"]
+		print item["name"]+"  "+str(item["sizeValue"])+" "+item["sizeUnit"]+" "+str(item["sizeBytes"])
+	ftp.quit()
+	return downList
+
+#Suma el peso de los elementos de una lista de descarga con data de peso
+def sizeDownList(downList):
+	totalSizeBytes = 0
+	for item in downList:
+		totalSizeBytes += item["sizeBytes"]
+	return totalSizeBytes
+
+#Suma el peso de un rango de elementos en orden hasta completar una cuota de peso
+def sizeDownListByQuota(downList,maxSizeBytes):
+	totalSizeBytes = 0
+	for item in downList:
+		if(totalSizeBytes <= maxSizeBytes):
+			totalSizeBytes += item["sizeBytes"]
+		else:
+			break
+
+
+	
 def downloadItems(downList,destFolder,ftpObj):
 	downLog = []
 	downObj ={}
