@@ -331,14 +331,15 @@ def sizeDownListByQuotaHi(downList,maxSizeBytes):
 			if(item["sizeBytes"] < maxSizeBytes):
 				print "item['sizeUnit']: "+item['sizeUnit']
 				if(item['sizeUnit'] == maxSizeObj['unit']):
-					print "Descarta"
-					tmpList.append(item)
-				else:
 					totalSizeBytes += item["sizeBytes"]
 					miniList.append(item)
 					if (totalSizeBytes > maxSizeBytes):
 						totalSizeBytes -= item["sizeBytes"]
 						miniList.remove(item)
+				else:
+					print "Descarta"
+					tmpList.append(item)
+					
 						#break
 
 			print "totalSizeBytes: "+str(totalSizeBytes)
