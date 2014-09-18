@@ -18,7 +18,7 @@ print "Tu lista pesa: " + str(sizeFormatList["value"]) + " "+sizeFormatList["uni
 print "\n \n"
 sizeGb = 20
 sizeBy = gbToBytes(sizeGb)
-newSizeGb = bytesToGb(sizeBy)
+newSizeGb = bytesToGiB(sizeBy)
 
 print newSizeGb
 #downloadItems(downList,destFolder,ftpObj)

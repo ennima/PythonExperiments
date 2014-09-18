@@ -4,51 +4,94 @@ from l_JobManager import *
 def l_ftpDownloadTest():
 	test()
 
-def bytesToKb(sizeBytes):
+# Trabajando con potencias 1024 bytes
+def bytesToKiB(sizeBytes):
 	kbs = float(sizeBytes/1024)
 	return kbs
 
-def bytesToMb(sizeBytes):
-	kbSize = bytesToKb(sizeBytes)
+def bytesToMiB(sizeBytes):
+	kbSize = bytesToKiB(sizeBytes)
 	mbs = float(kbSize/1024)
 	return mbs
 
-def bytesToGb(sizeBytes):
-	mbs = bytesToMb(sizeBytes)
+def bytesToGiB(sizeBytes):
+	mbs = bytesToMiB(sizeBytes)
 	gbs = float(mbs/1024)
 	return gbs
 
-def bytesToTb(sizeBytes):
-	gbs = bytesToGb(sizeBytes)
+def bytesToTiB(sizeBytes):
+	gbs = bytesToGiB(sizeBytes)
 	tbs = float(gbs/1024)
 	return tbs
 
+def bytesToPiB(sizeBytes):
+	tbs = bytesToTiB(sizeBytes)
+	pbs = float(tbs/1024)
+	return pbs
+
+def bytesToEiB(sizeBytes):
+	pbs = bytesToPiB(sizeBytes)
+	ebs = float(pbs/1024)
+	return ebs
+
+def bytesToZiB(sizeBytes):
+	ebs = bytesToEiB(sizeBytes)
+	zbs = float(ebs/1024)
+	return zbs
+
+def bytesToYiB(sizeBytes):
+	zbs = bytesToZiB(sizeBytes)
+	ybs = float(zbs/1024)
+	return ybs
+
+
 def bytesToFormatSize(sizeBytes):
 	formatSize = {"value":0,"unit":"bytes"}
-
-	if(bytesToGb(sizeBytes)<1):
-		
-		if(bytesToMb(sizeBytes)<1):
-			
-			if(bytesToKb(sizeBytes)<1):
-				#print "Bytes"
-				formatSize["value"] = sizeBytes
-				formatSize["unit"] = "bytes"
+	if (bytesToYiB(sizeBytes)<1):
+		if (bytesToZiB(sizeBytes)<1):
+			if (bytesToEiB(sizeBytes)<1):
+				if (bytesToPiB(sizeBytes)<1):
+					if (bytesToTiB(sizeBytes)<1):
+						if(bytesToGiB(sizeBytes)<1):
+							
+							if(bytesToMiB(sizeBytes)<1):
+								
+								if(bytesToKiB(sizeBytes)<1):
+									#print "Bytes"
+									formatSize["value"] = sizeBytes
+									formatSize["unit"] = "bytes"
+								else:
+									#print "Kb"
+									formatSize["value"] = bytesToKiB(sizeBytes)
+									formatSize["unit"] = "KiB"
+							else:
+								#print "Mb"
+								formatSize["value"] = bytesToMiB(sizeBytes)
+								formatSize["unit"] = "MiB"
+						else:
+							#print "Gb"
+							formatSize["value"] = bytesToGiB(sizeBytes)
+							formatSize["unit"] = "GiB"
+					else:
+						formatSize["value"] = bytesToTiB(sizeBytes)
+						formatSize["unit"] = "TiB"
+				else:
+					formatSize["value"] = bytesToPiB(sizeBytes)
+					formatSize["unit"] = "PiB"
 			else:
-				#print "Kb"
-				formatSize["value"] = bytesToKb(sizeBytes)
-				formatSize["unit"] = "Kb"
+				formatSize["value"] = bytesToEiB(sizeBytes)
+				formatSize["unit"] = "EiB"
 		else:
-			#print "Mb"
-			formatSize["value"] = bytesToMb(sizeBytes)
-			formatSize["unit"] = "Mb"
+			formatSize["value"] = bytesToZiB(sizeBytes)
+			formatSize["unit"] = "ZiB"
 	else:
-		#print "Gb"
-		formatSize["value"] = bytesToGb(sizeBytes)
-		formatSize["unit"] = "Gb"
+		formatSize["value"] = bytesToYiB(sizeBytes)
+		formatSize["unit"] = "YiB"
+
 	formatSize["bytes"] = sizeBytes
 	
 	return formatSize
+
 
 
 def kbToBytes(sizeKb):
