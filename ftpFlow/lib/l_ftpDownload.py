@@ -23,6 +23,7 @@ def bytesToTiB(sizeBytes):
 	gbs = bytesToGiB(sizeBytes)
 	tbs = float(gbs/1024)
 	return tbs
+	
 
 def bytesToPiB(sizeBytes):
 	tbs = bytesToTiB(sizeBytes)
