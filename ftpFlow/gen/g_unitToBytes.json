@@ -1,0 +1,50 @@
+[
+   {
+        "prefix": "kib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "KiB"
+    }, 
+    {
+        "prefix": "mib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "MiB"
+    }, 
+    {
+        "prefix": "gib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "GiB"
+    }, 
+    {
+        "prefix": "tib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "TiB"
+    }, 
+    {
+        "prefix": "pib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "PiB"
+    }, 
+    {
+        "prefix": "eib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "EiB"
+    }, 
+    {
+        "prefix": "zib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "ZiB"
+    }, 
+    {
+        "prefix": "yib", 
+        "sufix": "ToBytes",
+        "param" : "sizeBytes",
+        "unit" : "YiB"
+    }
+]

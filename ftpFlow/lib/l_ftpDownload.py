@@ -4,7 +4,10 @@ from l_JobManager import *
 def l_ftpDownloadTest():
 	test()
 
+
+####################  Conversiones de  Bytes ################
 # Trabajando con potencias 1024 bytes
+#-------------------- Transformando Bytes a unidades --------#
 def bytesToKiB(sizeBytes):
 	kbs = float(sizeBytes/1024)
 	return kbs
@@ -24,7 +27,6 @@ def bytesToTiB(sizeBytes):
 	tbs = float(gbs/1024)
 	return tbs
 	
-
 def bytesToPiB(sizeBytes):
 	tbs = bytesToTiB(sizeBytes)
 	pbs = float(tbs/1024)
@@ -45,7 +47,7 @@ def bytesToYiB(sizeBytes):
 	ybs = float(zbs/1024)
 	return ybs
 
-
+#return formatSize{"value":"","unit":""}
 def bytesToFormatSize(sizeBytes):
 	formatSize = {"value":0,"unit":"bytes"}
 	if (bytesToYiB(sizeBytes)<1):
@@ -93,19 +95,60 @@ def bytesToFormatSize(sizeBytes):
 	
 	return formatSize
 
-
-
-def kbToBytes(sizeKb):
+#-------------------- Transformando unidades a bytes --------#
+def kibToBytes(sizeKb):
 	bytes = sizeKb * 1024
 	return bytes
 
-def mbToBytes(sizeMb):
+def mibToBytes(sizeMb):
 	bytes = (sizeMb * 1024) * 1024
 	return bytes
 
-def gbToBytes(sizeGv):
+def gibToBytes(sizeGv):
 	bytes = ((sizeGv * 1024) * 1024) * 1024
 	return bytes
+
+def tibToBytes(sizeGv):
+	bytes = (((sizeGv * 1024) * 1024) * 1024)*1024
+	return bytes
+
+def pibToBytes(sizeGv):
+	bytes = tibToBytes(sizeGv) * 1024
+	return bytes
+
+def eibToBytes(sizeGv):
+	bytes = pibToBytes(sizeGv) * 1024
+	return bytes
+
+def zibToBytes(sizeGv):
+	bytes = eibToBytes(sizeGv) * 1024
+	return bytes
+
+def zibToBytes(sizeGv):
+	bytes = zibToBytes(sizeGv) * 1024
+	return bytes
+
+#Calcula valor en bytes de x cantidad de unidad x
+def unitToBytes(value,unit):
+	if (unit == KiB):
+		bytes = kibToBytes(value)
+	elif (unit == MiB):
+		bytes = mibToBytes(value)
+	elif (unit == GiB):
+		bytes = gibToBytes(value)
+	elif (unit == TiB):
+		bytes = tibToBytes(value)
+	elif (unit == PiB):
+		bytes = pibToBytes(value)
+	elif (unit == EiB):
+		bytes = eibToBytes(value)
+	elif (unit == ZiB):
+		bytes = zibToBytes(value)
+	elif (unit == YiB):
+		bytes = yibToBytes(value)
+	return bytes
+	
+####################  Conversiones de  Bytes ################
 
 def copiaFile(ftp,destFolder,rootPath,item):
 	#remoteFileSize =ftp.size(item["path"]+"/"+item["name"])
@@ -163,6 +206,12 @@ def sizeItemDownList(ftpObj,downList):
 	ftp.quit()
 	return downList
 
+
+############### Trabajando con peso en disco #####################
+
+
+
+
 #Suma el peso de los elementos de una lista de descarga con data de peso
 def sizeDownList(downList):
 	totalSizeBytes = 0
@@ -171,16 +220,74 @@ def sizeDownList(downList):
 	return totalSizeBytes
 
 #Suma el peso de un rango de elementos en orden hasta completar una cuota de peso
+#Entrega un objeto con el total en bytes y un objeto listaDescarga
 def sizeDownListByQuota(downList,maxSizeBytes):
+	miniListDict = {}
+	miniList = []
 	totalSizeBytes = 0
 	for item in downList:
 		if(totalSizeBytes <= maxSizeBytes):
-			totalSizeBytes += item["sizeBytes"]
+			if(item["sizeBytes"] < maxSizeBytes):
+				totalSizeBytes += item["sizeBytes"]
+				miniList.append(item)
+				if (totalSizeBytes > maxSizeBytes):
+					totalSizeBytes -= item["sizeBytes"]
+					miniList.remove(item)
+					#break
+			#print "totalSizeBytes: "+str(totalSizeBytes)
+			#print "maxSizeBytes: "+str(maxSizeBytes)
+		else:
+			break
+	miniListDict["size"] = totalSizeBytes
+	miniListDict["downList"] = miniList
+	return miniListDict
+
+
+#Suma el peso de un rango de elementos en orden hasta completar una cuota
+#de peso, buscando bajar la mayor cantidad de elementos de poco peso
+#Entrega un objeto con el total en bytes y un objeto listaDescarga
+def sizeDownListByQuotaLow(downList,maxSizeBytes):
+	miniListDict = {}
+	miniList = []
+	tmpList = []
+	totalSizeBytes = 0
+	tmpTotalSizeBytes = 0
+	difTotalSizeBytes = 0
+
+	maxSizeObj = bytesToFormatSize(maxSizeBytes)
+
+	for item in downList:
+		if(totalSizeBytes <= maxSizeBytes):
+			if(item["sizeBytes"] < maxSizeBytes):
+				print "item['sizeUnit']: "+item['sizeUnit']
+				if(item['sizeUnit'] == maxSizeObj['unit']):
+					print "Descarta"
+				else:
+					totalSizeBytes += item["sizeBytes"]
+					miniList.append(item)
+					if (totalSizeBytes > maxSizeBytes):
+						totalSizeBytes -= item["sizeBytes"]
+						miniList.remove(item)
+						#break
+
+			print "totalSizeBytes: "+str(totalSizeBytes)
+			print "maxSizeBytes: "+str(maxSizeBytes)
 		else:
 			break
 
+	difTotalSizeBytes = maxSizeBytes - totalSizeBytes
+	difTotalSizeBytesObj = bytesToFormatSize(difTotalSizeBytes)
+	print "Diferencia: "+str(difTotalSizeBytesObj["value"])+" "+difTotalSizeBytesObj["unit"]
+	miniListDict["size"] = totalSizeBytes
+	miniListDict["downList"] = miniList
+	return miniListDict
 
-	
+
+############### Trabajando con peso en disco #####################
+
+
+
+#Descarga los elementos de una lista de descarga
 def downloadItems(downList,destFolder,ftpObj):
 	downLog = []
 	downObj ={}
