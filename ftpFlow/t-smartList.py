@@ -25,4 +25,4 @@ sizeBy = gibToBytes(sizeGb)
 newSizeGb = bytesToGiB(sizeBy)
 
 print newSizeGb
-downloadItems(quotaObj["downList"],destFolder,ftpObj)
+#downloadItems(downList,destFolder,ftpObj)

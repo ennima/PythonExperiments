@@ -13,7 +13,11 @@ formatList = sizeItemDownList(ftpObj,downList)
 sizeFormatList = bytesToFormatSize(sizeDownList(formatList))
 print "Tu lista pesa: " + str(sizeDownList(formatList)) + " bytes"
 print "Tu lista pesa: " + str(sizeFormatList["value"]) + " "+sizeFormatList["unit"]
-quotaObj = sizeDownListByQuotaHi(formatList,gibToBytes(4))
+
+
+quotaObj = sizeDownListByQuotaLow(formatList,gibToBytes(4))
+
+
 quota = bytesToFormatSize(quotaObj["size"])
 print "\n \n Tu lista quota pesa: " + str(quota["value"])+" "+quota["unit"]
 print "Elementos por descargar quota: "+ str(len(quotaObj["downList"]))
@@ -25,4 +29,4 @@ sizeBy = gibToBytes(sizeGb)
 newSizeGb = bytesToGiB(sizeBy)
 
 print newSizeGb
-downloadItems(quotaObj["downList"],destFolder,ftpObj)
+#downloadItems(quotaObj["downList"],destFolder,ftpObj)

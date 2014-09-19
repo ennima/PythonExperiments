@@ -88,21 +88,55 @@ def bytesToFormatSize(sizeBytes):
 	
 	return formatSize
 
+#Entrega Estadisticas de espacio en disco del path
+#return fsStatObj
+"""
+	formatSize = {"value":0,"unit":"TiB","bytes":10000000}
 
+	totalSize = FormatSize
+	actualFreeBytes = FormatSize
+	resSpace = FormatSize
+	usedSpace = FormatSize
 
+	usedSpacePerCent = int %
+	freeSpacePerCent = int %
+"""
+def unixFsStat(pathFs):
+	stat = os.statvfs(pathFs)
+
+	totalSize = bytesToFormatSize(stat.f_frsize * stat.f_blocks)
+	actualFreeBytes = bytesToFormatSize(stat.f_frsize * stat.f_bfree)
+	resSpace = bytesToFormatSize(stat.f_frsize * stat.f_bavail)
+	usedSpace = bytesToFormatSize(totalSize["bytes"] - actualFreeBytes["bytes"])
+
+	usedSpacePerCent = (usedSpace["bytes"] *100) / totalSize["bytes"]
+	freeSpacePerCent = 100 - usedSpacePerCent
+
+	fsStatObj = {}
+	fsStatObj["path"] = pathFs
+	fsStatObj["totalSize"] = totalSize
+	fsStatObj["actualFreeBytes"] = actualFreeBytes
+	fsStatObj["resSpace"] = resSpace
+	fsStatObj["usedSpace"] = usedSpace
+	fsStatObj["usedSpacePerCent"] = usedSpacePerCent
+	fsStatObj["freeSpacePerCent"] = freeSpacePerCent
+
+	return fsStatObj
+
+def printFsStatObj(fsStatObj):
+	for attrib in fsStatObj:
+		print attrib,":",fsStatObj[attrib]
+		#print fsStatObj[attrib]
+		#print "------------------------"
 
 pathFs = "/mnt/Noticias/VBackup"
+fsStatObj =  unixFsStat(pathFs)
 
-stat = os.statvfs(pathFs)
-
-totalSize = bytesToFormatSize(stat.f_frsize * stat.f_blocks)
-actualFreeBytes = bytesToFormatSize(stat.f_frsize * stat.f_bfree)
-resSpace = bytesToFormatSize(stat.f_frsize * stat.f_bavail)
-usedSpace = bytesToFormatSize(totalSize["bytes"] - actualFreeBytes["bytes"])
-
-usedSpacePerCent = (usedSpace["bytes"] *100) / totalSize["bytes"]
-print "totalSize: "+str(totalSize["value"])+" "+totalSize["unit"]
-print "actualFreeBytes: "+str(actualFreeBytes["value"])+" "+actualFreeBytes["unit"]
-print "resSpace: "+str(resSpace["value"])+" "+resSpace["unit"]
-print "usedSpace: "+str(usedSpace["value"])+" "+usedSpace["unit"]
-print "used %:"+str(usedSpacePerCent)
+#print fsStatObj["totalSize"]
+printFsStatObj(fsStatObj)
+"""
+for attrib in fsStatObj:
+	print attrib
+	print fsStatObj[attrib]
+	print "------------------------"
+	"""
