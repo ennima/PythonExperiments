@@ -1,3 +1,11 @@
+"""
+	version: 0.0.1
+	Author: Enrique Nieto
+	Date: 16/09/14
+	Description: Lib para descarga por FTP
+
+
+"""
 import os
 from l_JobManager import *
 from l_byteWork import *

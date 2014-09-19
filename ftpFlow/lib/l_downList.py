@@ -1,3 +1,11 @@
+"""
+	version: 0.0.1
+	Author: Enrique Nieto
+	Date: 18/09/14
+	Description: Lib para trabajo con listas de Descarga
+
+
+"""
 from l_byteWork import *
 ############### Trabajando con peso en disco #####################
 

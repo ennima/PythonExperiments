@@ -1,3 +1,11 @@
+"""
+	version: 0.0.1
+	Author: Enrique Nieto
+	Date: 16/09/14
+	Description: Lib para apoyo en la creacion de Listas de Descarga
+
+
+"""
 from l_analisis import *
 
 def test():
@@ -14,7 +22,7 @@ def readJson(jsonFile):
 	
 	return json_data
 
-
+#Entrega una blackList de elementos
 def discardDirs(dirsList,jsonData):
 	mainList = []
 	for item in jsonData:
@@ -28,15 +36,15 @@ def discardDirs(dirsList,jsonData):
 					#print item["path"]+"   "+carpeta+" "+item["name"]
 					mainList.append(item)
 	return mainList
-
+	
+#Entrega una lista sin los elementos de blackList
 def cleanDownList(blackList,bruteList):
 	mainList = []
 	for item in bruteList:
 		if not item in blackList:
 			
-
-
 			mainList.append(item)
+	
 	return mainList
 		
 
