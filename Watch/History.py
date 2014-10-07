@@ -38,6 +38,7 @@ class History:
 
 	key_id = "id"
 	key_criteria = "datetime:"
+	key_criteria2 = "datetime:"
 	
 	def __init__(self):
 		print "History Created..."
@@ -138,7 +139,8 @@ class History:
 		self.versionMergedList.append(versionHistoryItem)
 		
 	def save(self):
-		appendJson(self.mergedList,self.backupPath,self.mergedListJson,self.key_id,self.key_criteria)
+		appendJson(self.mergedList,self.backupPath,self.mergedListJson,"id","name","size")
+		#appendJson(self.mergedList,self.backupPath,self.mergedListJson,"id","name")
 		
 	def reindexList(self,lista,indexKey):
 		finOfList=len(lista)-1
@@ -154,9 +156,7 @@ class History:
 			print orderList[index]
 			tmpField = orderList[index]
 			tmpField[indexKey] = index
-			reindexedList.append(tmpField
-
-				)
+			reindexedList.append(tmpField)
 
 		print "\n \n"
 		for linea in reindexedList:

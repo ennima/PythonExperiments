@@ -5,7 +5,8 @@ import time
 import json
 from time import mktime
 from stat import *
-
+from l_workJson import *
+from History import History
 #### Object File
 #				modififiedDate
 #				name
@@ -18,32 +19,6 @@ dateMin = "2014-09-30T00:40:00"
 dateMax = datetime.datetime.now()
 dateFilter = "%Y-%m-%dT%H:%M:%S"
 
-def readJson(jsonFile):
-	with open(jsonFile) as json_file:
-		json_data = json.load(json_file)
-		#print json_data
-
-	print "Total de Files: "+str(len(json_data))
-	
-	return json_data
-
-def saveJson(data,path,fileName):
-	f = open(path+fileName,"w")
-	json.dump(data,f)
-	f.close()
-
-"""
-def walktree(top, callback):
-	for f in os.listdir(top):
-		pathname = os.path.join(top,f)
-		mode = os.stat(pathname).st_mode
-		if S_ISDIR(mode):
-			walktree(pathname, callback)
-		elif S_ISREG(mode):
-			callback(pathname)
-		else:
-			print 'Skiping %s' % pathname
-"""
 #Return datetime convierte una cadena tipo "2014-09-30T00:40:00" a datetime
 def stringToTime(strl):
 	minDate = time.strptime(strl,dateFilter)
@@ -84,62 +59,7 @@ def fechaMayor(modifiedDate,createdDate):
 
 	return workingDate
 
-"""
-def walktreeDir(top, callback):
-	totalFiles = 0
-	downFiles = 0
 
-	for f in os.listdir(top):
-		pathname = os.path.join(top,f)
-		mode = os.stat(pathname).st_mode
-		
-		if S_ISDIR(mode):
-			print "---------------------------------------"
-			print "NOMBRE: "+os.path.basename(pathname)
-			ext = os.path.basename(pathname).split(".")
-			nombre = ext[0]
-			
-			if((len(ext)-1)>0):
-				print "Es Conformable: "+ext[1]
-				callback(pathname,totalFiles,downFiles)
-			else:
-				walktree(pathname, callback)
-			
-		elif S_ISREG(mode):
-			callback(pathname,totalFiles,downFiles)
-		else:
-			print 'Skiping %s' % pathname
-	print "\n\n"
-	print "totalFiles: ",totalFiles
-	print "downFiles: ",downFiles
-
-
-def visitfile(filea,totalFiles,downFiles):
-	totalFiles = totalFiles + 1
-	print "\n \n"
-	print 'Visitng ', filea
-	fileNameList= filea.split(".")
-	extension = fileNameList[1]
-
-	statFile = os.stat(filea)
-	print datetime.datetime.fromtimestamp(statFile.st_mtime)
-	print "###################################################"
-	#print datetime.datetime.fromtimestamp(statFile.st_atime)
-	#print datetime.datetime.fromtimestamp(statFile.st_ctime)
-
-	modifiedDate = datetime.datetime.fromtimestamp(statFile.st_mtime)
-	createdDate = datetime.datetime.fromtimestamp(statFile.st_atime)
-
-	print "modifiedDate: " +dateInRange(modifiedDate,stringToTime(dateMin),dateMax)
-	print "createdDate: " +dateInRange(createdDate,stringToTime(dateMin),dateMax)
-
-	workingDate = fechaMayor(modifiedDate,createdDate)
-	print "workingDate: ", workingDate
-	print dateInRange(workingDate,stringToTime(dateMin),dateMax)
-	if(dateInRange(workingDate,stringToTime(dateMin),dateMax)):
-		print "Agrega a la lista de descarga"
-		downFiles = downFiles + 1
-"""
 def get_size(start_path = '.'):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(start_path):
@@ -166,7 +86,7 @@ class Analizer:
 	downloadFiles = 0
 
 	def walktreeDir(self, top, callback):
-		
+		print "-++-+-+-+TOP: ",top
 		for f in os.listdir(top):
 			pathname = os.path.join(top,f)
 			mode = os.stat(pathname).st_mode
@@ -269,7 +189,11 @@ class Watcher():
 		print "Setting Poller"
 
 		if(self.watchLogReaded == 0):
-			self.backList = readJson(self.initLogList)
+			if(os.path.exists(self.initLogList)):
+				self.backList = readJson(self.initLogList)
+			else:
+				initList = []
+				self.backList = initList
 			#Obtengo la fecha del ultimo polling desde File
 			if(os.path.exists(self.logList)):
 				polingTime = readJson(self.logList)
@@ -329,10 +253,11 @@ class Watcher():
 	def buscaPorFecha(self,fechaMin):
 		fechaCmd = fechaMin.strftime(self.dateFilter)
 		print fechaCmd
-		
+		print "########### Path:",self.path
 		print "########## FechaMin: ",fechaMin
 		analizador = Analizer()
 		analizador.dateMin = fechaMin
+		analizador.jsonName = self.initLogList
 		analizador.walktreeDir(self.path, analizador.visitfile)
 
 	def onPolling(self):
@@ -363,5 +288,6 @@ if __name__ == '__main__':
 	watcher = Watcher()
 	watcher.pollingTime = 10
 	watcher.path = sys.argv[1]
+	Watcher.initLogList = "Down.json"
 	
 	watcher.poller()

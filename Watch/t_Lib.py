@@ -8,6 +8,9 @@ historial = History()
 
 historial.path = "history\his"
 historial.backupPath = "Bk"
+historial.key_id = "id"
+historial.key_criteria2 = "size"
+historial.key_criteria = "name"
 
 
 
@@ -22,11 +25,13 @@ historial.backupPath = "Bk"
 baseList = []
 baseB = []
 baseFormat = []
-for i in range(0,20):
-	baseList.append({"name":"FILE_"+str(i),"path":"PlayToAir","type":"cmf","size":1923654568212,"modififiedDate":datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")})
+for i in range(0,6):
+	baseList.append({"id":i, "name":"FILdE_"+str(i),"path":"PlayToAir","type":"cmf","size":2923654568212,"modififiedDate":datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")})
 
 historial.set(baseList)
 historial.get()
 
 
 historial.printStatus()
+
+historial.save()
