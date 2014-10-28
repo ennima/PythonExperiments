@@ -1,0 +1,15 @@
+[
+    {
+        "active": "yes", 
+        "destFolder": "dest", 
+        "ftpDest": "yes", 
+        "ftpHost": "192.168.196.92", 
+        "ftpPass": "", 
+        "ftpUser": "mxfmovie", 
+        "id": 0, 
+        "name": "summitStandAlone", 
+        "originFolder": "origin", 
+        "originPath": "V:\\media\\PlayToAir", 
+        "preset": "MXF-MPEG"
+    }
+]

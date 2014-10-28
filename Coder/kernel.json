@@ -1,0 +1,15 @@
+[
+    {
+        "ftpMaxUpload": 1, 
+        "listsFolder": "lists", 
+        "threads": 48, 
+        "transcodingSlots": 2, 
+        "watchs": "assets\\app\\watchs.json",
+        "watchFolderRetryTime":10,
+        "engines":"assets\\engines",
+        "defaultEngine":"engine",
+        "version":"0.0.1",
+        "app":"ennimaCoder",
+        "agents":"assets\\app\\agents.json"
+    }
+]
